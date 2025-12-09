@@ -1,5 +1,4 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { UNIVERSAL_ROUTER_ADDRESS } from '@uniswap/universal-router-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { QuoteType } from 'hooks/routing/types'
 import { useRouterTrade } from 'hooks/routing/useRouterTrade'
@@ -16,6 +15,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRe
 import { InterfaceTrade, TradeState } from 'state/routing/types'
 import { Field, swapAtom, swapEventHandlersAtom } from 'state/swap'
 import { routerPreferenceAtom } from 'state/swap/settings'
+import { getUniversalRouterAddressOrUndefined } from 'utils/getUniversalRouterAddress'
 import { isExactInput } from 'utils/tradeType'
 import tryParseCurrencyAmount from 'utils/tryParseCurrencyAmount'
 
@@ -116,7 +116,7 @@ function useComputeSwapInfo(): SwapInfo {
   const approval = useSwapApproval(permit2Enabled ? undefined : maximumAmountIn)
   const allowance = usePermit2Allowance(
     permit2Enabled ? maximumAmountIn : undefined,
-    permit2Enabled && chainId ? UNIVERSAL_ROUTER_ADDRESS(chainId) : undefined
+    permit2Enabled ? getUniversalRouterAddressOrUndefined(chainId) : undefined
   )
 
   return useMemo(() => {

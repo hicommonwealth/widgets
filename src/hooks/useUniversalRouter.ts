@@ -5,6 +5,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { SwapRouter, UNIVERSAL_ROUTER_ADDRESS } from '@uniswap/universal-router-sdk'
 import { FeeOptions, toHex } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
+import { SupportedChainId } from 'constants/chains'
 import { TX_GAS_MARGIN } from 'constants/misc'
 import { DismissableError, UserRejectedRequestError, WidgetPromise } from 'errors'
 import { useCallback, useMemo } from 'react'
@@ -13,6 +14,8 @@ import { SwapTransactionInfo, TransactionType } from 'state/transactions'
 import isZero from 'utils/isZero'
 import { isUserRejection } from 'utils/jsonRpcError'
 import { swapErrorToUserReadableMessage } from 'utils/swapErrorToUserReadableMessage'
+
+import { getUniversalRouterAddress } from 'utils/getUniversalRouterAddress'
 
 import { usePerfEventHandler } from './usePerfEventHandler'
 import { PermitSignature } from './usePermitAllowance'
@@ -50,7 +53,7 @@ export function useUniversalRouterSwapCallback(trade: InterfaceTrade | undefined
           })
           const tx = {
             from: account,
-            to: UNIVERSAL_ROUTER_ADDRESS(chainId),
+            to: getUniversalRouterAddress(chainId),
             data,
             // TODO: universal-router-sdk returns a non-hexlified value.
             ...(value && !isZero(value) ? { value: toHex(value) } : {}),
@@ -76,7 +79,36 @@ export function useUniversalRouterSwapCallback(trade: InterfaceTrade | undefined
         (error) => {
           if (error instanceof DismissableError) throw error
           if (isUserRejection(error)) throw new UserRejectedRequestError()
-          throw new DismissableError({ message: swapErrorToUserReadableMessage(error), error })
+          
+          // Extract detailed error information for debugging
+          const errorMessage = swapErrorToUserReadableMessage(error)
+          const detailedError =
+            error?.reason ||
+            error?.message ||
+            error?.error?.reason ||
+            error?.error?.message ||
+            error?.data?.message ||
+            error?.data?.reason ||
+            String(error)
+          
+          console.error('Universal Router swap error:', {
+            chainId,
+            routerAddress: chainId ? getUniversalRouterAddress(chainId) : undefined,
+            error,
+            message: error?.message,
+            reason: error?.reason,
+            code: error?.code,
+            data: error?.data,
+            detailedError,
+            fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)),
+          })
+          
+          // If we have a more specific error message, include it
+          const enhancedMessage = detailedError && detailedError !== errorMessage
+            ? `${errorMessage}\n\nDetailed error: ${detailedError}`
+            : errorMessage
+          
+          throw new DismissableError({ message: enhancedMessage, error })
         }
       ),
     [account, chainId, options.deadline, options.feeOptions, options.permit, options.slippageTolerance, provider, trade]

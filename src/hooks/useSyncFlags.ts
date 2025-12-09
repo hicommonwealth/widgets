@@ -1,8 +1,8 @@
-import { UNIVERSAL_ROUTER_ADDRESS } from '@uniswap/universal-router-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { Atom, atom } from 'jotai'
 import { useAtomValue } from 'jotai/utils'
 import { useMemo } from 'react'
+import { getUniversalRouterAddressOrUndefined } from 'utils/getUniversalRouterAddress'
 
 // Flags are sticky settings - they cannot be changed without remounting the Widget.
 export interface Flags {
@@ -25,13 +25,12 @@ export function useBrandedFooter() {
 export function usePermit2() {
   const { chainId } = useWeb3React()
   const permit2 = useAtomValue(flagsAtom).permit2 ?? false
-  try {
-    // Detect if the Universal Router is not yet deployed to chainId.
-    // This is necessary so that we can fallback correctly on chains without a Universal Router deployment.
-    // It will be removed once Universal Router is deployed on all supported chains.
-    chainId && UNIVERSAL_ROUTER_ADDRESS(chainId)
-    return permit2
-  } catch {
+  // Detect if the Universal Router is not yet deployed to chainId.
+  // This is necessary so that we can fallback correctly on chains without a Universal Router deployment.
+  // It will be removed once Universal Router is deployed on all supported chains.
+  const routerAddress = getUniversalRouterAddressOrUndefined(chainId)
+  if (!routerAddress) {
     return false
   }
+  return permit2
 }

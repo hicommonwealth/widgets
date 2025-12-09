@@ -95,4 +95,8 @@ export const JSON_RPC_FALLBACK_ENDPOINTS: Record<SupportedChainId, string[]> = {
     'https://1rpc.io/base',
     'https://base.meowrpc.com',
   ],
+  [SupportedChainId.SONEIUM]: [
+    // "Safe" URLs
+    'https://rpc.soneium.org/',
+  ],
 }

@@ -10,6 +10,7 @@ import { AllowanceState } from 'hooks/usePermit2Allowance'
 import { usePermit2 as usePermit2Enabled } from 'hooks/useSyncFlags'
 import useTokenColorExtraction from 'hooks/useTokenColorExtraction'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
+import { getUniversalRouterAddressOrUndefined } from 'utils/getUniversalRouterAddress'
 import { useUniversalRouterSwapCallback } from 'hooks/useUniversalRouter'
 import { useAtomValue } from 'jotai/utils'
 import { useCallback, useEffect, useState } from 'react'
@@ -43,21 +44,25 @@ export default function SwapButton({ disabled }: { disabled: boolean }) {
   const missingToken = !inputCurrency || !outputCurrency
 
   const permit2Enabled = usePermit2Enabled()
+  // For chains that only support Universal Router (like Soneium), always use Universal Router
+  const hasUniversalRouter = chainId ? getUniversalRouterAddressOrUndefined(chainId) !== undefined : false
+  const useUniversalRouter = permit2Enabled || hasUniversalRouter
+
   const { callback: swapRouterCallback } = useSwapCallback({
-    trade: permit2Enabled ? undefined : trade,
+    trade: useUniversalRouter ? undefined : trade,
     allowedSlippage: slippage.allowed,
     recipientAddressOrName: account ?? null,
     signatureData: approval?.signatureData,
     deadline,
     feeOptions,
   })
-  const universalRouterSwapCallback = useUniversalRouterSwapCallback(permit2Enabled ? trade : undefined, {
+  const universalRouterSwapCallback = useUniversalRouterSwapCallback(useUniversalRouter ? trade : undefined, {
     slippageTolerance: slippage.allowed,
     deadline,
     permit: allowance.state === AllowanceState.ALLOWED ? allowance.permitSignature : undefined,
     feeOptions,
   })
-  const swapCallback = permit2Enabled ? universalRouterSwapCallback : swapRouterCallback
+  const swapCallback = useUniversalRouter ? universalRouterSwapCallback : swapRouterCallback
 
   const [open, setOpen] = useState(false)
   // Close the review modal if there is no available trade.

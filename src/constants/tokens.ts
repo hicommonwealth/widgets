@@ -137,6 +137,41 @@ export const USDC_BASE = new Token(
   'USDC',
   'USD Coin'
 )
+export const USDC_SONEIUM = new Token(
+  SupportedChainId.SONEIUM,
+  '0xbA9986D2381edf1DA03B0B9c1f8b00dc4AacC369',
+  6,
+  'USDC.e',
+  'Bridged USD Coin'
+)
+export const USDT_SONEIUM = new Token(
+  SupportedChainId.SONEIUM,
+  '0x3A337a6adA9d885b6Ad95ec48F9b75f197b5AE35',
+  6,
+  'USDT',
+  'Tether USD'
+)
+export const ASTR_SONEIUM = new Token(
+  SupportedChainId.SONEIUM,
+  '0x2CAE934a1e84F693fbb78CA5ED3B0A6893259441',
+  18,
+  'ASTR',
+  'Astar'
+)
+export const WSTETH_SONEIUM = new Token(
+  SupportedChainId.SONEIUM,
+  '0xaA9BD8c957D803466FA92504BDd728cC140f8941',
+  18,
+  'wstETH',
+  'Wrapped Staked Ether'
+)
+export const STETH_SONEIUM = new Token(
+  SupportedChainId.SONEIUM,
+  '0x0Ce031AEd457C870D74914eCAA7971dd3176cDAF',
+  18,
+  'stETH',
+  'Staked Ether'
+)
 export const USDC: { [chainId in SupportedChainId]: Token } = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM,
@@ -153,6 +188,7 @@ export const USDC: { [chainId in SupportedChainId]: Token } = {
   [SupportedChainId.ROPSTEN]: USDC_ROPSTEN,
   [SupportedChainId.BNB]: USDC_BNB_CHAIN,
   [SupportedChainId.BASE]: USDC_BASE,
+  [SupportedChainId.SONEIUM]: USDC_SONEIUM,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -513,6 +549,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WETH',
     'Wrapped Ether'
   ),
+  [SupportedChainId.SONEIUM]: new Token(
+    SupportedChainId.SONEIUM,
+    '0x4200000000000000000000000000000000000006',
+    18,
+    'WETH',
+    'Wrapped Ether'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {
@@ -598,5 +641,6 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.CELO]: PORTAL_USDC_CELO.address,
     [SupportedChainId.CELO_ALFAJORES]: USDC_CELO_ALFAJORES.address,
     [SupportedChainId.BASE]: USDC_BASE.address,
+    [SupportedChainId.SONEIUM]: USDC_SONEIUM.address,
   },
 }
