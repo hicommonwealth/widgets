@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
+import { SupportedChainId } from 'constants/chains'
 import { useAsyncError } from 'components/Error/ErrorBoundary'
 import { ResponsiveDialog } from 'components/ResponsiveDialog'
 import { useSwapInfo } from 'hooks/swap'
@@ -10,7 +11,6 @@ import { AllowanceState } from 'hooks/usePermit2Allowance'
 import { usePermit2 as usePermit2Enabled } from 'hooks/useSyncFlags'
 import useTokenColorExtraction from 'hooks/useTokenColorExtraction'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
-import { getUniversalRouterAddressOrUndefined } from 'utils/getUniversalRouterAddress'
 import { useUniversalRouterSwapCallback } from 'hooks/useUniversalRouter'
 import { useAtomValue } from 'jotai/utils'
 import { useCallback, useEffect, useState } from 'react'
@@ -44,9 +44,9 @@ export default function SwapButton({ disabled }: { disabled: boolean }) {
   const missingToken = !inputCurrency || !outputCurrency
 
   const permit2Enabled = usePermit2Enabled()
-  // For chains that only support Universal Router (like Soneium), always use Universal Router
-  const hasUniversalRouter = chainId ? getUniversalRouterAddressOrUndefined(chainId) !== undefined : false
-  const useUniversalRouter = permit2Enabled || hasUniversalRouter
+  // Soneium only supports Universal Router, so always use it for Soneium
+  const isSoneium = chainId === SupportedChainId.SONEIUM
+  const useUniversalRouter = permit2Enabled || isSoneium
 
   const { callback: swapRouterCallback } = useSwapCallback({
     trade: useUniversalRouter ? undefined : trade,

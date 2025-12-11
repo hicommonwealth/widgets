@@ -1,7 +1,6 @@
 import { t } from '@lingui/macro'
 import { ErrorCode } from 'constants/eip1193'
 
-import { decodeUniversalRouterError, isUniversalRouterError } from './decodeUniversalRouterError'
 import { getReason } from './jsonRpcError'
 
 /**
@@ -17,49 +16,6 @@ export function swapErrorToUserReadableMessage(error: any): string {
   }
 
   let reason = getReason(error)
-
-  // Try to extract revert reason from error data if available
-  if (!reason || reason === 'execution reverted' || reason === 'Internal JSON-RPC error') {
-    // Check if there's error data that might contain the revert reason
-    const errorData = error?.data || error?.error?.data || error?.body?.error?.data
-    if (errorData) {
-      // If error data is a string, it might be the revert reason
-      if (typeof errorData === 'string' && errorData.startsWith('0x')) {
-        // Try to decode Universal Router errors
-        if (isUniversalRouterError(errorData)) {
-          const decodedError = decodeUniversalRouterError(errorData)
-          if (decodedError) {
-            // Map Universal Router error codes to readable messages
-            reason = decodedError
-          } else {
-            // Unknown Universal Router error, but based on the encoded data structure
-            // and the fact that it's a long encoded error, it's likely a slippage issue
-            // The error data contains encoded parameters suggesting amount mismatches
-            reason = 'STF' // Assume it's a slippage error (most common)
-          }
-        } else {
-          // Try to decode the revert reason from the error data
-          // Revert reasons are typically encoded in the data after the selector
-          try {
-            // The first 4 bytes (8 hex chars) are the error selector, the rest might be the encoded reason
-            if (errorData.length > 10) {
-              // This is a simplified check - actual decoding would require ABI
-              reason = `execution reverted (data: ${errorData.substring(0, 100)}...)`
-            }
-          } catch (e) {
-            // Ignore decoding errors
-          }
-        }
-      } else if (typeof errorData === 'string') {
-        reason = errorData
-      }
-    }
-
-    // Also check error.message for nested errors
-    if ((!reason || reason === 'execution reverted') && error?.error?.message) {
-      reason = error.error.message
-    }
-  }
 
   if (reason?.indexOf('execution reverted: ') === 0) reason = reason.substr('execution reverted: '.length)
 
