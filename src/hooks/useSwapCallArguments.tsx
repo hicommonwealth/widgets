@@ -40,27 +40,10 @@ export function useSwapCallArguments(
   const argentWalletContract = useArgentWalletContract()
 
   return useMemo(() => {
-    if (!trade || !recipient || !provider || !account || !chainId || !deadline) {
-      console.debug('useSwapCallArguments: Missing required params', {
-        hasTrade: !!trade,
-        hasRecipient: !!recipient,
-        hasProvider: !!provider,
-        hasAccount: !!account,
-        chainId,
-        hasDeadline: !!deadline,
-      })
-      return []
-    }
+    if (!trade || !recipient || !provider || !account || !chainId || !deadline) return []
 
     const swapRouterAddress = SWAP_ROUTER_ADDRESSES[chainId]
-    if (!swapRouterAddress) {
-      console.error('useSwapCallArguments: No router address found for chainId', {
-        chainId,
-        availableChainIds: Object.keys(SWAP_ROUTER_ADDRESSES).map(Number),
-        SWAP_ROUTER_ADDRESSES,
-      })
-      return []
-    }
+    if (!swapRouterAddress) return []
 
     const swapOptions = {
       fee: feeOptions,

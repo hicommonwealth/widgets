@@ -4,7 +4,7 @@ import { Pair } from '@uniswap/v2-sdk'
 import { Pool } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from 'constants/chains'
-import { L2_CHAIN_IDS } from 'constants/chains'
+import { L2_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 import useNativeCurrency from 'hooks/useNativeCurrency'
 import JSBI from 'jsbi'
 import { useMemo } from 'react'
@@ -93,8 +93,11 @@ export default function useAutoSlippageTolerance({
   const nativeCurrencyPrice = useUSDCPrice((trade && nativeCurrency) ?? undefined)
 
   return useMemo(() => {
+    // Original logic: if (!trade || onL2) return DEFAULT_AUTO_SLIPPAGE
+    // Modified: Only Soneium gets higher slippage, all other L2s keep original 0.1%
     if (!trade) return DEFAULT_AUTO_SLIPPAGE
-    if (onL2) return L2_DEFAULT_SLIPPAGE // Use higher slippage for L2 chains
+    if (onL2 && chainId === SupportedChainId.SONEIUM) return L2_DEFAULT_SLIPPAGE
+    if (onL2) return DEFAULT_AUTO_SLIPPAGE
 
     const nativeGasCost =
       nativeGasPrice && typeof gasEstimate === 'number'
