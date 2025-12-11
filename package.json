@@ -31,7 +31,7 @@
     "prei18n:compile": "lingui extract --locale en-US",
     "i18n:compile": "lingui compile",
     "ajv:compile": "node scripts/compileAjvValidators.js",
-    "prepare": "yarn concurrently \"npm:contracts:compile\" \"npm:i18n:compile\" \"npm:ajv:compile\"",
+    "prepare": "npm run build",
     "prepublishOnly": "yarn build",
     "start": "cosmos",
     "typecheck": "tsc -p tsconfig.json",
