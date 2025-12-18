@@ -1,8 +1,12 @@
 {
-  "name": "@uniswap/widgets",
-  "description": "Uniswap Interface",
-  "homepage": "https://github.com/Uniswap/widgets#readme",
-  "repository": "https://github.com/Uniswap/widgets",
+  "name": "@commonxyz/uniswap-widgets",
+  "description": "Uniswap Interface (Forked)",
+  "version": "1.0.0",
+  "homepage": "https://github.com/hicommonwealth/widgets#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hicommonwealth/widgets.git"
+  },
   "files": [
     "dist"
   ],
@@ -27,17 +31,19 @@
   "scripts": {
     "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
     "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*.json\"",
-    "contracts:compile": "npm run contracts:compile:abi && npm run contracts:compile:v3",
+    "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:v3",
     "prei18n:compile": "lingui extract --locale en-US",
     "i18n:compile": "lingui compile",
     "ajv:compile": "node scripts/compileAjvValidators.js",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run build",
+    "prepare": "yarn concurrently \"npm:contracts:compile\" \"npm:i18n:compile\" \"npm:ajv:compile\"",
+    "prepublishOnly": "yarn build",
     "start": "cosmos",
     "typecheck": "tsc -p tsconfig.json",
     "prebuild": "tsc -p tsconfig.build.json",
     "build": "rollup --config --failAfterWarnings",
     "release": "semantic-release",
+    "deduplicate": "yarn-deduplicate --strategy=highest",
+    "publish:manual": "yarn build && yarn publish",
     "lint": "eslint .",
     "test": "jest src",
     "test:e2e": "jest e2e"
