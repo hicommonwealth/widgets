@@ -1,8 +1,12 @@
 {
-  "name": "@uniswap/widgets",
-  "description": "Uniswap Interface",
-  "homepage": "https://github.com/Uniswap/widgets#readme",
-  "repository": "https://github.com/Uniswap/widgets",
+  "name": "@commonxyz/uniswap-widgets",
+  "description": "Uniswap Interface (Forked)",
+  "version": "1.0.0",
+  "homepage": "https://github.com/hicommonwealth/widgets#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hicommonwealth/widgets.git"
+  },
   "files": [
     "dist"
   ],
@@ -39,6 +43,7 @@
     "build": "rollup --config --failAfterWarnings",
     "release": "semantic-release",
     "deduplicate": "yarn-deduplicate --strategy=highest",
+    "publish:manual": "yarn build && yarn publish",
     "lint": "eslint .",
     "test": "jest src",
     "test:e2e": "jest e2e"

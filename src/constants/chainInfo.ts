@@ -251,6 +251,19 @@ const CHAIN_INFO: ChainInfoMap = {
     color: '#0152ff',
     backgroundColor: '#0152ff',
   },
+  [SupportedChainId.SONEIUM]: {
+    networkType: NetworkType.L2,
+    blockWaitMsBeforeWarning: ms`25m`,
+    bridge: 'https://bridge.soneium.org/',
+    docs: 'https://docs.soneium.org/',
+    explorer: 'https://soneium.blockscout.com/',
+    infoLink: 'https://info.uniswap.org/#/soneium/',
+    label: 'Soneium',
+    logoUrl: ethereumLogoUrl,
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    color: '#627EEA',
+    backgroundColor: '#627EEA',
+  },
 }
 
 export function getChainInfo(chainId: SupportedL1ChainId): L1ChainInfo

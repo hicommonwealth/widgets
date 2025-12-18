@@ -4,6 +4,7 @@ import { NativeCurrency, Token } from '@uniswap/sdk-core'
 import { SupportedChainId } from './chains'
 import {
   AMPL,
+  ASTR_SONEIUM,
   CEUR_CELO,
   CMC02_CELO,
   CUSD_CELO,
@@ -22,22 +23,26 @@ import {
   renBTC,
   rETH2,
   sETH2,
+  STETH_SONEIUM,
   SWISE,
   TRIBE,
   USDC_BASE,
   USDC_BNB_CHAIN,
   USDC_MAINNET,
   USDC_POLYGON,
+  USDC_SONEIUM,
   USDT,
   USDT_ARBITRUM_ONE,
   USDT_BNB_CHAIN,
   USDT_OPTIMISM,
   USDT_POLYGON,
+  USDT_SONEIUM,
   WBTC,
   WBTC_ARBITRUM_ONE,
   WBTC_OPTIMISM,
   WETH_POLYGON,
   WRAPPED_NATIVE_CURRENCY,
+  WSTETH_SONEIUM,
 } from './tokens'
 
 type ChainTokenList = {
@@ -95,6 +100,14 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     ...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.BNB],
   ],
   [SupportedChainId.BASE]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.BASE], DAI_BASE, USDC_BASE],
+  [SupportedChainId.SONEIUM]: [
+    ...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.SONEIUM],
+    USDC_SONEIUM,
+    USDT_SONEIUM,
+    ASTR_SONEIUM,
+    WSTETH_SONEIUM,
+    STETH_SONEIUM,
+  ],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
   [SupportedChainId.MAINNET]: {

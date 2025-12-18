@@ -8,7 +8,7 @@ import CeloLogo from '../../assets/svg/celo_logo.svg'
 import MaticLogo from '../../assets/svg/matic-token-icon.svg'
 import { LogoTableInput } from './LogoTable'
 
-type Network = 'ethereum' | 'arbitrum' | 'optimism' | 'polygon' | 'celo' | 'smartchain' | 'base'
+type Network = 'ethereum' | 'arbitrum' | 'optimism' | 'polygon' | 'celo' | 'smartchain' | 'base' | 'soneium'
 
 function chainIdToNetworkName(networkId: SupportedChainId): Network | undefined {
   switch (networkId) {
@@ -26,6 +26,8 @@ function chainIdToNetworkName(networkId: SupportedChainId): Network | undefined 
       return 'smartchain'
     case SupportedChainId.BASE:
       return 'base'
+    case SupportedChainId.SONEIUM:
+      return 'soneium';
     default:
       return 'ethereum'
   }

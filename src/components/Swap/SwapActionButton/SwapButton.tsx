@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
+import { SupportedChainId } from 'constants/chains'
 import { useAsyncError } from 'components/Error/ErrorBoundary'
 import { ResponsiveDialog } from 'components/ResponsiveDialog'
 import { useSwapInfo } from 'hooks/swap'
@@ -43,21 +44,25 @@ export default function SwapButton({ disabled }: { disabled: boolean }) {
   const missingToken = !inputCurrency || !outputCurrency
 
   const permit2Enabled = usePermit2Enabled()
+  // Soneium only supports Universal Router, so always use it for Soneium
+  const isSoneium = chainId === SupportedChainId.SONEIUM
+  const useUniversalRouter = permit2Enabled || isSoneium
+
   const { callback: swapRouterCallback } = useSwapCallback({
-    trade: permit2Enabled ? undefined : trade,
+    trade: useUniversalRouter ? undefined : trade,
     allowedSlippage: slippage.allowed,
     recipientAddressOrName: account ?? null,
     signatureData: approval?.signatureData,
     deadline,
     feeOptions,
   })
-  const universalRouterSwapCallback = useUniversalRouterSwapCallback(permit2Enabled ? trade : undefined, {
+  const universalRouterSwapCallback = useUniversalRouterSwapCallback(useUniversalRouter ? trade : undefined, {
     slippageTolerance: slippage.allowed,
     deadline,
     permit: allowance.state === AllowanceState.ALLOWED ? allowance.permitSignature : undefined,
     feeOptions,
   })
-  const swapCallback = permit2Enabled ? universalRouterSwapCallback : swapRouterCallback
+  const swapCallback = useUniversalRouter ? universalRouterSwapCallback : swapRouterCallback
 
   const [open, setOpen] = useState(false)
   // Close the review modal if there is no available trade.

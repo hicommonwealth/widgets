@@ -1,6 +1,7 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { UNIVERSAL_ROUTER_ADDRESS } from '@uniswap/universal-router-sdk'
 import { useWeb3React } from '@web3-react/core'
+import { SupportedChainId } from 'constants/chains'
 import { QuoteType } from 'hooks/routing/types'
 import { useRouterTrade } from 'hooks/routing/useRouterTrade'
 import { useCurrencyBalances } from 'hooks/useCurrencyBalance'
@@ -16,6 +17,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRe
 import { InterfaceTrade, TradeState } from 'state/routing/types'
 import { Field, swapAtom, swapEventHandlersAtom } from 'state/swap'
 import { routerPreferenceAtom } from 'state/swap/settings'
+import { getUniversalRouterAddressOrUndefined } from 'utils/getUniversalRouterAddress'
 import { isExactInput } from 'utils/tradeType'
 import tryParseCurrencyAmount from 'utils/tryParseCurrencyAmount'
 
@@ -114,10 +116,20 @@ function useComputeSwapInfo(): SwapInfo {
     return maximumAmountIn?.currency.isToken ? (maximumAmountIn as CurrencyAmount<Token>) : undefined
   }, [slippage.allowed, trade.trade])
   const approval = useSwapApproval(permit2Enabled ? undefined : maximumAmountIn)
-  const allowance = usePermit2Allowance(
-    permit2Enabled ? maximumAmountIn : undefined,
-    permit2Enabled && chainId ? UNIVERSAL_ROUTER_ADDRESS(chainId) : undefined
-  )
+  // Soneium uses custom Universal Router address (not in SDK yet)
+  const routerAddress = (() => {
+    if (!permit2Enabled || !chainId) return undefined
+    if (chainId === SupportedChainId.SONEIUM) {
+      return getUniversalRouterAddressOrUndefined(chainId)
+    }
+    // Original logic for all other chains
+    try {
+      return UNIVERSAL_ROUTER_ADDRESS(chainId)
+    } catch {
+      return undefined
+    }
+  })()
+  const allowance = usePermit2Allowance(permit2Enabled ? maximumAmountIn : undefined, routerAddress)
 
   return useMemo(() => {
     return {

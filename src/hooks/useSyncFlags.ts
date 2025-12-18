@@ -1,8 +1,10 @@
 import { UNIVERSAL_ROUTER_ADDRESS } from '@uniswap/universal-router-sdk'
 import { useWeb3React } from '@web3-react/core'
+import { SupportedChainId } from 'constants/chains'
 import { Atom, atom } from 'jotai'
 import { useAtomValue } from 'jotai/utils'
 import { useMemo } from 'react'
+import { getUniversalRouterAddressOrUndefined } from 'utils/getUniversalRouterAddress'
 
 // Flags are sticky settings - they cannot be changed without remounting the Widget.
 export interface Flags {
@@ -25,6 +27,12 @@ export function useBrandedFooter() {
 export function usePermit2() {
   const { chainId } = useWeb3React()
   const permit2 = useAtomValue(flagsAtom).permit2 ?? false
+  // Soneium uses custom Universal Router address (not in SDK yet)
+  if (chainId === SupportedChainId.SONEIUM) {
+    const routerAddress = getUniversalRouterAddressOrUndefined(chainId)
+    return routerAddress ? permit2 : false
+  }
+  // Original logic for all other chains
   try {
     // Detect if the Universal Router is not yet deployed to chainId.
     // This is necessary so that we can fallback correctly on chains without a Universal Router deployment.

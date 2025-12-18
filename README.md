@@ -1,12 +1,10 @@
-# Uniswap Labs Widgets
+# Uniswap Labs Widgets (Forked)
 
-[![npm](https://img.shields.io/npm/v/@uniswap/widgets)](https://www.npmjs.com/package/@uniswap/widgets)
-[![Unit tests](https://github.com/Uniswap/interface/actions/workflows/test.yaml/badge.svg)](https://github.com/Uniswap/interface/actions/workflows/test.yaml)
-[![Integration tests](https://github.com/Uniswap/interface/actions/workflows/e2e.yaml/badge.svg)](https://github.com/Uniswap/interface/actions/workflows/e2e.yaml)
-[![Lint](https://github.com/Uniswap/interface/actions/workflows/lint.yml/badge.svg)](https://github.com/Uniswap/interface/actions/workflows/lint.yml)
-[![Crowdin](https://badges.crowdin.net/uniswap-interface/localized.svg)](https://crowdin.com/project/uniswap-interface)
+> **Note**: This is a forked version of the original [Uniswap widgets](https://github.com/Uniswap/widgets) package with custom modifications.
 
-The `@uniswap/widgets` package is an [npm package](https://www.npmjs.com/package/@uniswap/widgets) of React components used to provide subsets of the Uniswap Protocol functionality in a small and configurable user interface element.
+[![npm](https://img.shields.io/npm/v/@commonxyz/uniswap-widgets)](https://www.npmjs.com/package/@commonxyz/uniswap-widgets)
+
+The `@commonxyz/uniswap-widgets` package is an npm package of React components used to provide subsets of the Uniswap Protocol functionality in a small and configurable user interface element.
 
 # Uniswap Labs Swap Widget
 
@@ -21,10 +19,10 @@ You can customize the theme (colors, fonts, border radius, and more) to match th
 Install the widgets library via `npm` or `yarn`.
 
 ```js
-yarn add @uniswap/widgets
+yarn add @commonxyz/uniswap-widgets
 ```
 ```js
-npm i --save @uniswap/widgets
+npm i --save @commonxyz/uniswap-widgets
 ```
 
 ## Documentation
